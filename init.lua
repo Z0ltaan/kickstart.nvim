@@ -101,7 +101,12 @@ vim.keymap.set('n', 'q:', '<nop>', { noremap = true })
 vim.keymap.set('i', '<C-x>', function()
   print 'Hello'
 end)
+-- vim.cmd 'sb'
+local _writeAllBuffers = function()
+  vim.cmd 'wa'
+end
 
+vim.keymap.set('n', '<C-s>', _writeAllBuffers, { desc = 'Write all buffers' })
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
