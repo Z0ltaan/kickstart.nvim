@@ -11,11 +11,7 @@ vim.g.have_nerd_font = false
 
 vim.o.number = true
 vim.o.relativenumber = true
-
--- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
-
--- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
 
 -- Sync clipboard between OS and Neovim.
@@ -28,6 +24,7 @@ end)
 
 -- Enable break indent
 vim.o.breakindent = true
+vim.o.autoindent = true
 
 -- Save undo history
 vim.o.undofile = true
@@ -80,7 +77,7 @@ vim.o.confirm = true
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-vim.keymap.set('n', '<leader>tt', vim.cmd.Ex, { desc = '[T]oggle source [T]ree' })
+-- vim.keymap.set('n', '<leader>tt', vim.cmd.Ex, { desc = '[T]oggle source [T]ree' })
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -99,6 +96,8 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+vim.keymap.set('n', 'q:', '<nop>', { noremap = true })
+
 vim.keymap.set('i', '<C-x>', function()
   print 'Hello'
 end)
@@ -110,20 +109,18 @@ end)
 --  Try it with `yap` in normal mode
 --  See `:help vim.hl.on_yank()`
 --
-vim.api.nvim_create_autocmd('VimEnter', {
+vim.api.nvim_create_autocmd('BufEnter', {
   desc = 'Set indents and no comment on new line',
-  group = vim.api.nvim_create_augroup('mine-group', { clear = true }),
   callback = function()
     vim.opt.formatoptions:remove { 'r', 'o' }
     vim.o.shiftwidth = 2
     vim.o.expandtab = true
     vim.o.tabstop = 2
-    -- vim.o
   end,
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-  group = 'mine-group',
+  -- group = 'mine-group',
   pattern = 'help',
   command = 'wincmd L',
 })
@@ -163,7 +160,6 @@ rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
-  'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
 
   -- This is often very useful to both group configuration, as well as handle
   -- lazy loading plugins that don't need to be loaded immediately at startup.
@@ -550,7 +546,7 @@ require('lazy').setup({
         clangd = {},
         -- java = {},
         -- pyright = {},
-        -- cmake{},
+        cmake = {},
 
         -- ts_ls = {},
         --
@@ -820,7 +816,7 @@ require('lazy').setup({
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
         additional_vim_regex_highlighting = { 'ruby' },
       },
-      indent = { enable = true, disable = { 'ruby' } },
+      indent = { enable = false, disable = { 'ruby' } },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
@@ -830,21 +826,19 @@ require('lazy').setup({
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
 
-  -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
-  -- init.lua. If you want these files, they are in the repository, so you can just download them and
-  -- place them in the correct locations.
-
-  -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-  --
-  --  Here are some example plugins that I've included in the Kickstart repository.
-  --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-  --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
+  -- require('kickstart.plugins.indent_line')
+  {
+    'lukas-reineke/indent-blankline.nvim',
+    main = 'ibl',
+    ---@module "ibl"
+    ---@type ibl.config
+    opts = {
+      indent = { char = '┆' },
+    },
+  },
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
   --
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
