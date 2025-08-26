@@ -106,7 +106,12 @@ local _writeAllBuffers = function()
   vim.cmd 'wa'
 end
 
+local _closeAllWindows = function()
+  vim.cmd 'qa'
+end
+
 vim.keymap.set('n', '<C-s>', _writeAllBuffers, { desc = 'Write all buffers' })
+vim.keymap.set('n', '<C-x>', _closeAllWindows, { desc = 'Close all windows' })
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -548,7 +553,20 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        clangd = {},
+        clangd = {
+          cmd = { 'clangd', '--header-insertion=never' },
+          filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto' },
+          single_file_support = true,
+          capabilities = {
+            textDocument = {
+              completion = {
+                editsNearCursor = true,
+              },
+            },
+            offsetEncoding = { 'utf-8', 'utf-16' },
+          },
+        },
+        -- clangd = {},
         -- java = {},
         -- pyright = {},
         cmake = {},
