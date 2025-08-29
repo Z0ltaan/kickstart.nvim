@@ -1,5 +1,5 @@
 require 'config.options'
-require 'config.keymap'
+require 'config.vimkeymap'
 require 'config.autocommands'
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -27,6 +27,8 @@ require('lazy').setup({
   require 'plugins.mini_config',
   require 'plugins.treesitter_config',
   require 'plugins.breadcrumbs',
+  require 'plugins.mdrenderer_config',
+
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   --
@@ -55,5 +57,7 @@ require('lazy').setup({
   },
 })
 
+local _markdownToggle = require('render-markdown').toggle
+vim.keymap.set('n', '<leader>tr', _markdownToggle, { desc = '[T]oggle [R]ender' })
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
